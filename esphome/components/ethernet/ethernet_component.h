@@ -87,6 +87,7 @@ class EthernetComponent : public Component {
   void set_use_address(const std::string &use_address);
   void get_eth_mac_address_raw(uint8_t *mac);
   std::string get_eth_mac_address_pretty();
+  const std::string &get_mac_address() const { return this->mac_address_; }
   eth_duplex_t get_duplex_mode();
   eth_speed_t get_link_speed();
   bool powerdown();
@@ -141,6 +142,7 @@ class EthernetComponent : public Component {
   esp_netif_t *eth_netif_{nullptr};
   esp_eth_handle_t eth_handle_;
   esp_eth_phy_t *phy_{nullptr};
+  std::string mac_address_;  // Store the MAC address
 };
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)

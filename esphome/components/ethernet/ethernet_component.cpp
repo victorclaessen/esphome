@@ -220,6 +220,12 @@ void EthernetComponent::setup() {
   err = esp_eth_ioctl(this->eth_handle_, ETH_CMD_S_MAC_ADDR, mac_addr);
   ESPHL_ERROR_CHECK(err, "set mac address error");
 
+  char mac_str[18];
+  this->mac_address_ = str_snprintf(mac_str, sizeof(mac_str), "%02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2],
+                                    mac[3], mac[4], mac[5]);  // Store MAC address in class member
+
+  ESP_LOGI(TAG, "Ethernet MAC Address: %s", this->mac_address_.c_str());
+
   /* attach Ethernet driver to TCP/IP stack */
   err = esp_netif_attach(this->eth_netif_, esp_eth_new_netif_glue(this->eth_handle_));
   ESPHL_ERROR_CHECK(err, "ETH netif attach error");
@@ -578,11 +584,7 @@ void EthernetComponent::get_eth_mac_address_raw(uint8_t *mac) {
   ESPHL_ERROR_CHECK(err, "ETH_CMD_G_MAC error");
 }
 
-std::string EthernetComponent::get_eth_mac_address_pretty() {
-  uint8_t mac[6];
-  get_mac_address_raw(mac);
-  return str_snprintf("%02X:%02X:%02X:%02X:%02X:%02X", 17, mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-}
+std::string EthernetComponent::get_eth_mac_address_pretty() { return this->mac_address_; }
 
 eth_duplex_t EthernetComponent::get_duplex_mode() {
   esp_err_t err;
