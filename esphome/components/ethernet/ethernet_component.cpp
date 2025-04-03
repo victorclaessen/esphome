@@ -217,6 +217,7 @@ void EthernetComponent::setup() {
   // use ESP internal eth mac
   uint8_t mac_addr[6];
   esp_read_mac(mac_addr, ESP_MAC_ETH);
+  esp_read_mac(this->mac_addr_, ESP_MAC_ETH);
   err = esp_eth_ioctl(this->eth_handle_, ETH_CMD_S_MAC_ADDR, mac_addr);
   ESPHL_ERROR_CHECK(err, "set mac address error");
 
@@ -580,7 +581,7 @@ void EthernetComponent::get_eth_mac_address_raw(uint8_t *mac) {
 
 std::string EthernetComponent::get_eth_mac_address_pretty() {
   uint8_t mac[6];
-  get_mac_address_raw(mac);
+  std::copy(std::begin(this->mac_addr_), std::end(this->mac_addr_), std::begin(mac));
   return str_snprintf("%02X:%02X:%02X:%02X:%02X:%02X", 17, mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 }
 
